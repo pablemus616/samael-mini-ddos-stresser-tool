@@ -9,7 +9,7 @@
 
 - HTTP Flood (mass HTTP requests)
 - TCP Flood (raw TCP packets)
-- Minecraft Bot Swarm (join & spam chat)
+- Minecraft Bots (spam bots)
 
 ---
 
