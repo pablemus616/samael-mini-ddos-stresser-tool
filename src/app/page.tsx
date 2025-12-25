@@ -8,6 +8,7 @@ export default function Home() {
   const wsRef = useRef<WebSocket>(null);
   const [closing, setClosing] = useState("closing");
   const [payload, setPayload] = useState({
+    reqId: "",
     attackType: "http-flood",
     host: "",
     port: "",
@@ -31,7 +32,17 @@ export default function Home() {
       console.log("websocket conectado");
 
       ws.onmessage = (e) =>{
-        setMessages(prev => [...prev, e.data]);
+        try {
+          const message = JSON.parse(e.data);
+          if(message.req){
+            console.log(message.req)
+            setPayload(prev => ({...prev, reqId: message.req}))
+          } else {
+            setMessages(prev => [...prev, e.data]);
+          }
+        } catch (err){
+          setMessages(prev => [...prev, e.data]);
+        }
       }
 
       ws.onerror = (err)=>{
@@ -49,9 +60,9 @@ export default function Home() {
     }
   }, [closing]);
   async function handleSubmit () {
-    console.log(wsRef.current?.readyState)
     setMessages([]);
     const formatted = {
+      reqId: payload.reqId,
       attackType: payload.attackType,
       host: payload.host,
       port: Number(payload.port),
